@@ -23,7 +23,7 @@ public class Main {
             }
         }
 
-        int flag = 0;
+        int flag;
         do {
             flag = 0;
             for (Depot i : stock.getDepotList()) {

@@ -2,7 +2,7 @@ package ru.shumilov.ia.stock;
 
 import ru.shumilov.ia.transport.Transport;
 
-public class Depot {
+class Depot {
     private int index;
     private boolean busy;
     private int speedLoad;
@@ -15,26 +15,28 @@ public class Depot {
         this.distace = distance;
     }
 
-    public synchronized void setJob(Transport transport) {
+    void setJob(Transport transport) {
         busy = true;
         int storage = transport.getStorage();
         timeBusy = storage / speedLoad + distace / transport.getSpeed();
-        System.out.println("depot busy the " + transport.getType() + " on " + timeBusy);
+        System.out.println("depot " + index + " busy the " + transport.getType() + " on " + timeBusy);
 
 
         Thread thread = new Thread(() -> {
             do {
                 if (timeBusy > 0) {
-                    timeBusy-=10;
+                    timeBusy-=100;
                     System.out.println("depot " + index + " busy on " + timeBusy);
                     try {
-                        Thread.sleep(1000);
+                        Thread.sleep(10);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 } else {
                     busy = false;
+                    transport.setDone(true);
                     System.out.println("the depot " + index + " is free");
+                    break;
                 }
             }while (busy);
         });
@@ -42,7 +44,7 @@ public class Depot {
         thread.start();
     }
 
-    public boolean isBusy() {
+    boolean isBusy() {
         return busy;
     }
 }
